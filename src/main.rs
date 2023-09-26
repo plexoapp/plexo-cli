@@ -7,7 +7,7 @@ type UUID = String;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-    schema_path = "schema.json",
+    schema_path = "graphql/schema.json",
     query_path = "graphql/tasks.graphql",
     response_derives = "Debug"
 )]
