@@ -1,0 +1,17 @@
+query Tasks {
+  tasks {
+    id
+    title
+  }
+}
+
+query TasksWithOwner {
+  tasks {
+    id
+    title
+    owner {
+      id
+      name
+    }
+  }
+}
