@@ -50,16 +50,21 @@ pub struct TaskCreate {
     // #[arg(short, long)]
     /// The title of the task.
     pub title: String,
-    #[arg(short, long)]
     /// The description of the task.
+    #[arg(short, long)]
     pub description: Option<String>,
+    /// The priority of the task.
     #[arg(short, long)]
     pub priority: Option<TaskPriority>,
+    /// The status of the task.
     #[arg(short, long)]
     pub status: Option<TaskStatus>,
     /// The project ID of the task.
     #[arg(short = 'P', long)]
     pub project_id: Option<Uuid>,
+    /// The parent ID of the task.
+    #[arg(short = 'r', long)]
+    pub parent_id: Option<Uuid>,
     /// Set to create task interactively.
     #[arg(short, long, default_value = "false")]
     pub interactive: bool,

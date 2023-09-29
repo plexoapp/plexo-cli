@@ -30,22 +30,11 @@ async fn main() {
             match resource {
                 ResourceCreate::Task(task) => {
                     if task.interactive {
-                        let options: Vec<&str> = vec![
-                            "Banana",
-                            "Apple",
-                            "Strawberry",
-                            "Grapes",
-                            "Lemon",
-                            "Tangerine",
-                            "Watermelon",
-                            "Orange",
-                            "Pear",
-                            "Avocado",
-                            "Pineapple",
-                        ];
+                        let projects_names: Vec<&str> =
+                            vec!["Plexo Core", "Plexo CLI", "Plexo Platform"];
 
                         let ans: Result<&str, InquireError> =
-                            Select::new("Select the ", options).prompt();
+                            Select::new("Select parent project", projects_names).prompt();
 
                         match ans {
                             Ok(choice) => println!("{}! That's mine too!", choice),
