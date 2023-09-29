@@ -1,6 +1,7 @@
 use clap::Parser;
-use cli::tool::{Cli, CliCommands};
 use graphql_client::GraphQLQuery;
+use inquire::{InquireError, Select};
+use plexo_cli::tool::{Cli, CliCommands, ResourceCreate};
 
 #[allow(clippy::upper_case_acronyms)]
 type UUID = String;
@@ -15,7 +16,7 @@ pub struct Tasks;
 
 #[tokio::main]
 async fn main() {
-    println!("Hello, world!");
+    // println!("Hello, world!");
 
     let args = Cli::parse();
 
@@ -23,36 +24,40 @@ async fn main() {
         CliCommands::Get { resource } => {
             println!("Get: {:?}", resource)
         }
-        CliCommands::Create => {}
+        CliCommands::Create { resource } => {
+            println!("Create: {:?}", resource);
+
+            match resource {
+                ResourceCreate::Task(task) => {
+                    if task.interactive {
+                        let options: Vec<&str> = vec![
+                            "Banana",
+                            "Apple",
+                            "Strawberry",
+                            "Grapes",
+                            "Lemon",
+                            "Tangerine",
+                            "Watermelon",
+                            "Orange",
+                            "Pear",
+                            "Avocado",
+                            "Pineapple",
+                        ];
+
+                        let ans: Result<&str, InquireError> =
+                            Select::new("Select the ", options).prompt();
+
+                        match ans {
+                            Ok(choice) => println!("{}! That's mine too!", choice),
+                            Err(_) => println!("There was an error, please try again"),
+                        }
+                    }
+                    println!("Task: {:?}", task)
+                }
+            }
+        }
         CliCommands::Set => {}
         CliCommands::Delete => {}
         CliCommands::Login => {}
     }
-
-    // for _ in 0..args.count {
-    //     println!("Hello {}!", args.name)
-    // }
-
-    // let request_body = Tasks::build_query(tasks::Variables {});
-
-    // let client = reqwest::Client::new();
-    // let res = client
-    //     .post("/graphql")
-    //     .json(&request_body)
-    //     .send()
-    //     .await
-    //     .unwrap();
-
-    // let response_body: Response<tasks::ResponseData> = res.json().await.unwrap();
-
-    // let first_title = response_body
-    //     .data
-    //     .unwrap()
-    //     .tasks
-    //     .first()
-    //     .unwrap()
-    //     .title
-    //     .clone();
-
-    // println!("{:#?}", first_title);
 }

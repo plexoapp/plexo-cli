@@ -1,5 +1,5 @@
 [package]
-name = "cli"
+name = "plexo-cli"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,6 +8,8 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.4.5", features = ["derive"] }
 graphql_client = "0.13.0"
+inquire = "0.6.2"
 reqwest = { version = "0.11.20", features = ["json"] }
 serde = "1.0.188"
 tokio = { version = "1.32.0", features = ["full"] }
+uuid = { version = "1.4.1", features = ["v4", "fast-rng"] }
