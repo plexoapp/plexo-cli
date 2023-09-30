@@ -16,8 +16,6 @@ pub struct Tasks;
 
 #[tokio::main]
 async fn main() {
-    // println!("Hello, world!");
-
     let args = Cli::parse();
 
     match args.command {
@@ -37,7 +35,7 @@ async fn main() {
                             Select::new("Select parent project", projects_names).prompt();
 
                         match ans {
-                            Ok(choice) => println!("{}! That's mine too!", choice),
+                            Ok(choice) => println!("{} is your selected project", choice),
                             Err(_) => println!("There was an error, please try again"),
                         }
                     }

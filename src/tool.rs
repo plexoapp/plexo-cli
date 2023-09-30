@@ -1,3 +1,4 @@
+use chrono::NaiveDate;
 use clap::{arg, command, Args, Parser, Subcommand, ValueEnum};
 use uuid::Uuid;
 
@@ -20,9 +21,10 @@ pub enum CliCommands {
     Get { resource: Resource },
     /// Create one or more resources from a file or stdin.
     Create {
-        // #[arg(long, value_name = "COMMIT", value_enum)]
         #[command(subcommand)]
         resource: ResourceCreate,
+        // #[arg(long, short)]
+        // interactive: bool,
     },
     /// Set resources either from a file, stdin, or specifying label selectors, names, resource selectors, or resources.
     Set,
@@ -59,21 +61,33 @@ pub struct TaskCreate {
     /// The status of the task.
     #[arg(short, long)]
     pub status: Option<TaskStatus>,
+    /// The due date of the task.
+    /// Format: YYYY-MM-DD
+    #[arg(short = 'D', long)]
+    pub due_date: Option<NaiveDate>,
     /// The project ID of the task.
     #[arg(short = 'P', long)]
     pub project_id: Option<Uuid>,
     /// The parent ID of the task.
     #[arg(short = 'r', long)]
     pub parent_id: Option<Uuid>,
-    /// Set to create task interactively.
+    /// The Leader ID of the task.
+    #[arg(short, long)]
+    pub lead_id: Option<Uuid>,
+    /// Labels of the task.
+    pub labels: Option<Vec<String>>,
+
+    // / The assignee IDs of the task.
+    // pub assignee_ids: Option<Vec<Uuid>>,
+    /// Create the task interactively.
     #[arg(short, long, default_value = "false")]
     pub interactive: bool,
 }
 
-#[derive(ValueEnum, Copy, Clone, PartialEq, Debug, Default)]
+#[derive(ValueEnum, Copy, Clone, PartialEq, Debug)]
 pub enum TaskStatus {
-    #[default]
-    None,
+    // #[default]
+    // None,
     Backlog,
     ToDo,
     InProgress,
@@ -81,10 +95,10 @@ pub enum TaskStatus {
     Canceled,
 }
 
-#[derive(ValueEnum, Copy, Clone, PartialEq, Debug, Default)]
+#[derive(ValueEnum, Copy, Clone, PartialEq, Debug)]
 pub enum TaskPriority {
-    #[default]
-    None,
+    // #[default]
+    // None,
     Low,
     Medium,
     High,
