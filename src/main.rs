@@ -20,7 +20,7 @@ async fn main() {
 
     match args.command {
         CliCommands::Get { resource } => {
-            println!("Get: {:?}", resource)
+            println!("Get: {:?}", resource);
         }
         CliCommands::Create { resource } => {
             println!("Create: {:?}", resource);
