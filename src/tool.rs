@@ -1,6 +1,26 @@
-use chrono::NaiveDate;
-use clap::{arg, command, Args, Parser, Subcommand, ValueEnum};
-use uuid::Uuid;
+use std::path::PathBuf;
+
+use async_trait::async_trait;
+use clap::{command, Parser, Subcommand};
+// use openai_func_enums::{generate_enum_info, generate_value_arg_info, RunCommand, SubcommandGPT};
+use crate::commands::tasks::{TaskCreate, TaskGet};
+use openai_func_enums::{
+    arg_description, generate_enum_info, generate_value_arg_info,
+    get_function_chat_completion_args, CommandError, EnumDescriptor, RunCommand, SubcommandGPT,
+    VariantDescriptors,
+};
+
+use async_openai::{
+    types::{
+        ChatCompletionFunctionCall, ChatCompletionRequestMessageArgs,
+        CreateChatCompletionRequestArgs, FunctionCall, Role,
+    },
+    Client,
+};
+
+use serde::Deserialize;
+use serde_json::{json, Value};
+use tiktoken_rs::cl100k_base;
 
 /// Plexo CLI tool.
 #[derive(Parser)]
@@ -12,13 +32,18 @@ pub struct Cli {
     pub command: CliCommands,
 }
 
-#[derive(Subcommand)]
-
+#[derive(Debug, Subcommand)]
 pub enum CliCommands {
     /// Login to your Plexo instance.
     Login,
     /// List one or more resources.
-    Get { resource: Resource },
+    Get {
+        #[command(subcommand)]
+        resource: ResourceGet,
+
+        #[arg(long, short)]
+        interactive: bool,
+    },
     /// Create one or more resources from a file or stdin.
     Create {
         #[command(subcommand)]
@@ -30,77 +55,45 @@ pub enum CliCommands {
     Set,
     /// Delete resources either from a file, stdin, or specifying label selectors, names, resource selectors, or resources.
     Delete,
+    /// Process a natural language query and execute it.
+    Do {
+        #[arg(short, long)]
+        file: Option<PathBuf>,
+
+        // #[arg(short, long)]
+        query: String,
+    },
+    // GPT {
+    //     prompt: String,
+    // },
 }
 
-#[derive(ValueEnum, Clone, Copy, Debug, PartialEq)]
-pub enum Resource {
-    Tasks,
+#[derive(Subcommand, Clone, Copy, Debug, PartialEq, Deserialize)]
+pub enum ResourceGet {
+    Tasks(TaskGet),
     Projects,
     Teams,
     Members,
     Labels,
 }
 
-#[derive(Clone, Debug, PartialEq, Subcommand)]
+#[derive(Clone, Debug, PartialEq, Subcommand, Deserialize)]
 pub enum ResourceCreate {
     // #[command(name = "tasks")]
     Task(TaskCreate),
+    Projects,
+    Teams,
+    Members,
+    Labels,
 }
 
-#[derive(Args, Clone, Debug, PartialEq)]
-pub struct TaskCreate {
-    // #[arg(short, long)]
-    /// The title of the task.
-    pub title: String,
-    /// The description of the task.
-    #[arg(short, long)]
-    pub description: Option<String>,
-    /// The priority of the task.
-    #[arg(short, long)]
-    pub priority: Option<TaskPriority>,
-    /// The status of the task.
-    #[arg(short, long)]
-    pub status: Option<TaskStatus>,
-    /// The due date of the task.
-    /// Format: YYYY-MM-DD
-    #[arg(short = 'D', long)]
-    pub due_date: Option<NaiveDate>,
-    /// The project ID of the task.
-    #[arg(short = 'P', long)]
-    pub project_id: Option<Uuid>,
-    /// The parent ID of the task.
-    #[arg(short = 'r', long)]
-    pub parent_id: Option<Uuid>,
-    /// The Leader ID of the task.
-    #[arg(short, long)]
-    pub lead_id: Option<Uuid>,
-    /// Labels of the task.
-    pub labels: Option<Vec<String>>,
-
-    // / The assignee IDs of the task.
-    // pub assignee_ids: Option<Vec<Uuid>>,
-    /// Create the task interactively.
-    #[arg(short, long, default_value = "false")]
-    pub interactive: bool,
-}
-
-#[derive(ValueEnum, Copy, Clone, PartialEq, Debug)]
-pub enum TaskStatus {
-    // #[default]
-    // None,
-    Backlog,
-    ToDo,
-    InProgress,
-    Done,
-    Canceled,
-}
-
-#[derive(ValueEnum, Copy, Clone, PartialEq, Debug)]
-pub enum TaskPriority {
-    // #[default]
-    // None,
-    Low,
-    Medium,
-    High,
-    Urgent,
+#[async_trait]
+impl RunCommand for CliCommands {
+    // #[must_use]
+    // #[allow(clippy::type_complexity, clippy::type_repetition_in_bounds)]
+    async fn run(
+        &self,
+    ) -> Result<Option<String>, Box<dyn std::error::Error + Send + Sync + 'static>> {
+        Ok(None)
+    }
 }

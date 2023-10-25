@@ -19,7 +19,10 @@ async fn main() {
     let args = Cli::parse();
 
     match args.command {
-        CliCommands::Get { resource } => {
+        CliCommands::Get {
+            resource,
+            interactive: _,
+        } => {
             println!("Get: {:?}", resource);
         }
         CliCommands::Create { resource } => {
@@ -41,10 +44,17 @@ async fn main() {
                     }
                     println!("Task: {:?}", task)
                 }
+                ResourceCreate::Projects => {}
+                ResourceCreate::Teams => {}
+                ResourceCreate::Members => {}
+                ResourceCreate::Labels => {}
             }
         }
         CliCommands::Set => {}
         CliCommands::Delete => {}
         CliCommands::Login => {}
+        CliCommands::Do { file: _, query } => {
+            println!("Do: {:?}", query);
+        }
     }
 }
