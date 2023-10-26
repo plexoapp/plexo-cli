@@ -1,5 +1,6 @@
 use chrono::NaiveDate;
 use clap::{arg, Args, ValueEnum};
+use openai_func_enums::{EnumDescriptor, VariantDescriptors};
 use serde::Deserialize;
 use uuid::Uuid;
 
@@ -40,7 +41,9 @@ pub struct TaskCreate {
     pub interactive: bool,
 }
 
-#[derive(ValueEnum, Copy, Clone, PartialEq, Debug, Deserialize)]
+#[derive(
+    ValueEnum, Copy, Clone, PartialEq, Debug, Deserialize, EnumDescriptor, VariantDescriptors,
+)]
 pub enum TaskStatus {
     // #[default]
     // None,
@@ -51,7 +54,9 @@ pub enum TaskStatus {
     Canceled,
 }
 
-#[derive(ValueEnum, Copy, Clone, PartialEq, Debug, Deserialize)]
+#[derive(
+    ValueEnum, Copy, Clone, PartialEq, Debug, Deserialize, EnumDescriptor, VariantDescriptors,
+)]
 pub enum TaskPriority {
     // #[default]
     // None,
